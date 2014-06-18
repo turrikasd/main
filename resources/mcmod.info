@@ -1,0 +1,16 @@
+[
+{
+  "modid": "NoShelter",
+  "name": "NoShelter",
+  "description": "tba.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TheDespite"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
