@@ -86,7 +86,7 @@ public class EventHandlerClass {
 		}
 	}
 	
-	@SubscribeEvent
+	//@SubscribeEvent
 	public void livingEvent(LivingEvent event)
 	{
 		if (false && !event.entityLiving.isDead && Minecraft.getMinecraft().isIntegratedServerRunning() == true && !(event.entity instanceof EntityPlayer) && Minecraft.getSystemTime() > next)
@@ -128,7 +128,7 @@ public class EventHandlerClass {
 		}
 	}
 	
-	@SubscribeEvent
+	//@SubscribeEvent
 	public void blockEvent(BlockEvent event)
 	{
 		/*MinecraftServer ms = FMLCommonHandler.instance().getMinecraftServerInstance();

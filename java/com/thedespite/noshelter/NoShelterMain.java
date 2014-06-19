@@ -5,8 +5,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -43,8 +45,10 @@ public class NoShelterMain
     		
     		EntityRegistry.removeSpawn(EntityCreeper.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
     		EntityRegistry.removeSpawn(EntityZombie.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
-    		EntityRegistry.removeSpawn(EntitySkeleton.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
-    		EntityRegistry.removeSpawn(EntitySpider.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
+    		//EntityRegistry.removeSpawn(EntitySkeleton.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
+    		//EntityRegistry.removeSpawn(EntitySpider.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
+    		//EntityRegistry.removeSpawn(EntityEnderman.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
+    		//EntityRegistry.removeSpawn(EntityWitch.class, EnumCreatureType.monster, BiomeGenBase.getBiome(i));
     	}
     	
     	ZombieBlock.InitSelf();

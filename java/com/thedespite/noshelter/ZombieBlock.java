@@ -20,7 +20,7 @@ public class ZombieBlock extends Block {
 		if (w.isDaytime() && !w.isRaining() && !w.isThundering())
 			w.setBlockToAir(x, y, z);
 		
-		w.scheduleBlockUpdate(x, y, z, self, 10);
+		w.scheduleBlockUpdate(x, y, z, self, 100);
 	}
 
 	@Override
@@ -29,8 +29,6 @@ public class ZombieBlock extends Block {
 		
 		if (w.isDaytime() && !w.isRaining() && !w.isThundering())
 			w.setBlockToAir(x, y, z);
-		
-		System.out.println("A");
 		
 		w.scheduleBlockUpdate(x, y, z, self, 100);
 	}
