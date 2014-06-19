@@ -58,7 +58,7 @@ public class EntityCreeperDang extends EntityCreeper {
 					lastDistToPlayer = newDist;
 				}
 				
-				if (timesNoProgress >= 120 && newDist < 10.0d)
+				if (timesNoProgress >= 180 && newDist < 8.0d)
 				{
 					this.setCreeperState(1);
 			        func_146077_cc();
