@@ -19,6 +19,10 @@ public class EntityCreeperDang extends EntityCreeper {
 	private int timesNoProgress = 0;
 	private int explosionRadius = 3;
 	
+	World w;
+	Minecraft mc;
+	MinecraftServer ms;
+	
 	public EntityCreeperDang(World w) {
 		super(w);
 		// TODO Auto-generated constructor stub
@@ -31,12 +35,18 @@ public class EntityCreeperDang extends EntityCreeper {
 	public void onLivingUpdate() {
 		// TODO Auto-generated method stub
 		
-		if (Minecraft.getMinecraft().isIntegratedServerRunning())
+		if (mc == null)
+			mc = Minecraft.getMinecraft();
+		
+		if (mc.isIntegratedServerRunning())
 		{
-			if (Minecraft.getMinecraft().thePlayer != null)
+			if (mc.thePlayer != null)
 			{
-				MinecraftServer ms = FMLCommonHandler.instance().getMinecraftServerInstance();
-				World w = ms.worldServers[0];
+				if (ms == null)
+					ms = FMLCommonHandler.instance().getMinecraftServerInstance();
+				
+				if (w == null)
+					w = ms.worldServers[0];
 				
 				EntityPlayer closestP = null;
 				

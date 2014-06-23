@@ -27,25 +27,44 @@ public class EventHandlerClass {
 	World w;
 	long next = 0;
 	private final Lock lock = new ReentrantLock();
-	
+	Random rnd;
+	Minecraft mc;
+	MinecraftServer ms;
 	
 	@SubscribeEvent
 	public void tickEvent(TickEvent event)
 	{
-		if (true && Minecraft.getMinecraft().isIntegratedServerRunning() == true && event.type == TickEvent.Type.SERVER && Minecraft.getSystemTime() > next)
-		{
-			MinecraftServer ms = FMLCommonHandler.instance().getMinecraftServerInstance();
-			w = ms.worldServers[0];
+		if (mc == null)
+			mc = Minecraft.getMinecraft();
 		
-			if (Minecraft.getMinecraft().thePlayer != null && lock.tryLock())
+		if (true && mc.isIntegratedServerRunning() == true && event.type == TickEvent.Type.SERVER && Minecraft.getSystemTime() > next)
+		{
+			if (ms == null)
+				ms = FMLCommonHandler.instance().getMinecraftServerInstance();
+			
+			if (w == null)
+				w = ms.worldServers[0];
+		
+			if (mc.thePlayer != null && lock.tryLock())
 			{
-				Random rnd = new Random();
+				if (rnd == null)
+					rnd = new Random();
+				
 				EntityPlayer p = (EntityPlayer) w.playerEntities.get(rnd.nextInt(w.playerEntities.size()));
 
 				int x = (int) (p.posX + rnd.nextInt(32) - 16);
 				int z = (int) (p.posZ + rnd.nextInt(32) - 16);
 				
-				int y = 32;
+				int y;
+				
+				if (w.isDaytime())
+					y = (int) (p.posY - 48);
+				else // night
+					y = (int) (p.posY - 24);
+				
+				if (y < 0)
+					y = 0;
+				
 				for (; y < 256; y++)
 				{
 					if (w.isAirBlock(x, y, z))
@@ -53,7 +72,7 @@ public class EventHandlerClass {
 				}
 				
 				
-				//Minecraft.getMinecraft().thePlayer.sendChatMessage("" + x + ":" + y + ":" + z);
+				//mc.thePlayer.sendChatMessage("" + x + ":" + y + ":" + z);
 				
 				if (y != 256 && !w.isDaytime() || w.isBlockNormalCubeDefault((int)x, (int)y, (int)z, false) || w.isThundering() || w.getBlockLightValue((int)x, (int)y + 1, (int)z) < 7)
 				{
@@ -70,7 +89,7 @@ public class EventHandlerClass {
 						
 						yy += 2 + i;
 						
-						if (new Random().nextInt(4) == 0)
+						if (rnd.nextInt(4) == 0)
 							SpawnCD(xx, yy, zz);
 						else
 							SpawnZG(xx, yy, zz);

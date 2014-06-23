@@ -19,13 +19,11 @@ import net.minecraft.world.World;
 
 public class EntityZombieGoast extends EntityZombie {
 	
-	int bX = 0;
-	int bY = 0;
-	int bZ = 0;
+	World w;
+	Minecraft mc;
+	MinecraftServer ms;
+	Random rnd;
 	
-	int bD = 0;
-	
-	World ww;
 	
 	public EntityZombieGoast(World w) {
 		super(w);
@@ -39,18 +37,19 @@ public class EntityZombieGoast extends EntityZombie {
 	public void onLivingUpdate() {
 		// TODO Auto-generated method stub
 		
-		//Minecraft.getMinecraft().thePlayer.sendChatMessage("Living Update");
-		//System.out.println("Living Update");
+		if (mc == null)
+			mc = Minecraft.getMinecraft();
 		
-		
-		if (Minecraft.getMinecraft().isIntegratedServerRunning() == true)
+		if (mc.isIntegratedServerRunning() == true)
 		{
-			if (Minecraft.getMinecraft() != null)
-				if (Minecraft.getMinecraft().thePlayer != null)
+			if (mc != null)
+				if (mc.thePlayer != null)
 				{
-					MinecraftServer ms = FMLCommonHandler.instance().getMinecraftServerInstance();
-					World w = ms.worldServers[0];
-					ww = w;
+					if (ms == null)
+						ms = FMLCommonHandler.instance().getMinecraftServerInstance();
+					
+					if (w == null)
+						w = ms.worldServers[0];
 				
 					EntityPlayerMP closestP = null;
 					
@@ -106,7 +105,7 @@ public class EntityZombieGoast extends EntityZombie {
 						RemBlock(x, y + 2, z, closestP);
 					}
 					
-					if ((!w.isDaytime() || w.isRaining() || w.isThundering()) && yOff == 1 && new Random().nextInt(64) <= 64 && closestP.posY - this.posY > closestP.getDistanceToEntity(this) / 2)
+					if ((!w.isDaytime() || w.isRaining() || w.isThundering()) && yOff == 1 && this.onGround && !this.isInWater() && closestP.posY - this.posY > closestP.getDistanceToEntity(this) / 2)
 					{
 						if (closestP != null)
 						{
@@ -128,18 +127,6 @@ public class EntityZombieGoast extends EntityZombie {
 							if (w.getBlock((int)fwd2.xCoord, (int)fwd2.yCoord, (int)fwd2.zCoord) == Blocks.air)
 								w.setBlock((int)fwd2.xCoord, (int)fwd2.yCoord, (int)fwd2.zCoord, ZombieBlock.self);
 						}
-						
-						else if (false)
-						{
-							if (w.getBlock(x, y - 1, z) == Blocks.air)
-								w.setBlock(x, y - 1, z, ZombieBlock.self);
-							
-							int xx = (int)(this.posX + 2 * this.getLookVec().xCoord);
-							int zz = (int)(this.posZ + 2 * this.getLookVec().zCoord);
-							
-							if (w.getBlock(xx, y, zz) == Blocks.air)
-								w.setBlock(xx, y, zz, Blocks.dirt);
-						}
 					}
 					
 					if (this.entityToAttack == null)
@@ -156,16 +143,22 @@ public class EntityZombieGoast extends EntityZombie {
 	
 	protected void RemBlock(int x, int y, int z, EntityPlayerMP p)
 	{
-		if (new Random().nextInt(32) == 0)
+		if (rnd == null)
+			rnd = new Random();
+		
+		if (rnd.nextInt(32) == 0)
 		{
-			Block b = ww.getBlock(x, y, z);
+			Block b = w.getBlock(x, y, z);
 			//b.onBlockExploded(ww, x, y, z, null);
 			
 			if (b.isNormalCube())
 			{
-				this.playSound("mob.zombie.metal", 1.0f, new Random().nextFloat());
-				b.dropBlockAsItemWithChance(ww, x, y, z, ww.getBlockMetadata(x, y, z), 1.0F, 0);
-				ww.setBlockToAir(x, y, z);
+				this.playSound("mob.zombie.metal", 1.0f, rnd.nextFloat());
+				
+				// TODO
+				//b.dropBlockAsItemWithChance(w, x, y, z, w.getBlockMetadata(x, y, z), 1.0F, 0);
+				
+				w.setBlockToAir(x, y, z);
 			}
 		}
 			//ww.setBlockToAir(x, y, z);
