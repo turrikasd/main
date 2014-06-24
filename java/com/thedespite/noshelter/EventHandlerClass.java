@@ -23,7 +23,8 @@ import net.minecraftforge.event.world.WorldEvent.PotentialSpawns;
 
 public class EventHandlerClass {
 
-	private int spawnTime = 3000;
+	private int spawnTime = 11000;
+	private boolean isD = false;
 	World w;
 	long next = 0;
 	private final Lock lock = new ReentrantLock();
@@ -45,7 +46,28 @@ public class EventHandlerClass {
 			if (w == null)
 				w = ms.worldServers[0];
 		
-			if (mc.thePlayer != null && lock.tryLock())
+			long date = w.getWorldTime() / 24000L;
+			long thclk = w.getWorldTime() / 12000L;
+			
+			boolean isDay = false;
+			if (thclk % 2L == 0)
+				isDay = true;
+					
+			if (!isD && date != 0 && date % 2L == 0 && !w.isDaytime())
+			{
+				isD = true;
+				spawnTime -= 1000;
+				
+				mc.thePlayer.sendChatMessage("It's time to kill zombie goast");
+			}
+			
+			else if (isDay && isD)
+			{
+				isD = false;
+				mc.thePlayer.sendChatMessage("Is nolonger time to kill zombie goast");
+			}
+			
+			if (isD && mc.thePlayer != null && lock.tryLock())
 			{
 				if (rnd == null)
 					rnd = new Random();
@@ -71,7 +93,6 @@ public class EventHandlerClass {
 						break;
 				}
 				
-				
 				//mc.thePlayer.sendChatMessage("" + x + ":" + y + ":" + z);
 				
 				if (y != 256 && !w.isDaytime() || w.isBlockNormalCubeDefault((int)x, (int)y, (int)z, false) || w.isThundering() || w.getBlockLightValue((int)x, (int)y + 1, (int)z) < 7)
@@ -89,7 +110,7 @@ public class EventHandlerClass {
 						
 						yy += 2 + i;
 						
-						if (rnd.nextInt(4) == 0)
+						if (rnd.nextInt(8) == 0)
 							SpawnCD(xx, yy, zz);
 						else
 							SpawnZG(xx, yy, zz);

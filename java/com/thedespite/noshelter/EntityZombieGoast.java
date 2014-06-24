@@ -8,16 +8,26 @@ import net.minecraft.block.BlockDirt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class EntityZombieGoast extends EntityZombie {
+	
+	boolean hasB = false;
+	float hardness;
+	int bX, bY, bZ;
+	int bTime = 0;
+	
+	float bSelfX, bSelfY, bSelfZ, bSelfYaw, bSelfPitch;
 	
 	World w;
 	Minecraft mc;
@@ -36,6 +46,8 @@ public class EntityZombieGoast extends EntityZombie {
 	@Override
 	public void onLivingUpdate() {
 		// TODO Auto-generated method stub
+		
+		super.onLivingUpdate();
 		
 		if (mc == null)
 			mc = Minecraft.getMinecraft();
@@ -129,16 +141,19 @@ public class EntityZombieGoast extends EntityZombie {
 						}
 					}
 					
-					if (this.entityToAttack == null)
+					if (this.entityToAttack == null || this.getDistanceToEntity(entityToAttack) > this.getDistanceToEntity(closestP))
 					{
 						this.setAttackTarget(closestP);
 						//this.entityToAttack = closestP;
 						//this.setRevengeTarget(closestP);
 					}
+					
+					if (hasB && this.onGround)
+					{
+						this.setLocationAndAngles(bSelfX, bSelfY, bSelfZ, bSelfYaw, bSelfPitch);
+					}
 				}
 		}
-		
-		super.onLivingUpdate();
 	}
 	
 	protected void RemBlock(int x, int y, int z, EntityPlayerMP p)
@@ -146,9 +161,54 @@ public class EntityZombieGoast extends EntityZombie {
 		if (rnd == null)
 			rnd = new Random();
 		
-		if (rnd.nextInt(32) == 0)
+		Block b;
+		
+		if (!hasB && !w.getBlock(x, y, z).isAir(w, x, y, z))
 		{
-			Block b = w.getBlock(x, y, z);
+			hasB = true;
+			bX = x;
+			bY = y;
+			bZ = z;
+			
+			bSelfX = (float) this.posX;
+			bSelfY = (float) this.posY;
+			bSelfZ = (float) this.posZ;
+			bSelfYaw = this.rotationYaw;
+			bSelfPitch = this.rotationPitch;
+			
+			bTime = 0;
+			b = w.getBlock(bX, bY, bZ);
+			hardness = b.getBlockHardness(w, bX, bY, bZ);
+			
+			if (hardness == 0f)
+				hasB = false;
+		}
+		
+		
+		if (hasB)
+		{
+			bTime++;
+			
+			int i = (int)((float)bTime / (hardness * 160) * 10.0F);
+			w.destroyBlockInWorldPartially(this.getEntityId(), bX, bY, bZ, i);
+			
+			if (rnd.nextInt(60) == 0)
+			{
+				this.playSound("mob.zombie.metal", 0.1f, rnd.nextFloat());
+			}
+			
+			if (bTime >= (hardness * 160))
+			{
+				w.setBlockToAir(bX, bY, bZ);
+				bTime = 0;
+				hasB = false;
+				this.playSound("mob.zombie.metal", 1.0f, rnd.nextFloat());
+			}
+		}
+		
+		/*
+		if (hardness != 0f && rnd.nextInt((int)(hardness * 160)) == 0)
+		{
 			//b.onBlockExploded(ww, x, y, z, null);
 			
 			if (b.isNormalCube())
@@ -160,7 +220,7 @@ public class EntityZombieGoast extends EntityZombie {
 				
 				w.setBlockToAir(x, y, z);
 			}
-		}
+		}*/
 			//ww.setBlockToAir(x, y, z);
 	}
 }

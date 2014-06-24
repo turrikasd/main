@@ -3,10 +3,14 @@ package com.thedespite.noshelter;
 import java.util.Random;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockSnow;
 
@@ -46,13 +50,11 @@ public class ZombieBlock extends Block {
 	{
     	self = new ZombieBlock(Material.ground)
         .setHardness(0.2F).setStepSound(Block.soundTypeGravel)
-        .setBlockName("ZombieBlock").setCreativeTab(CreativeTabs.tabBlock)
-        .setBlockTextureName("wool_colored")
+        .setBlockName("ZombieBlock")
+        .setBlockTextureName(NoShelterMain.MODID + ":" + "ZombieBlock")
         .setTickRandomly(true);
     	
-    	GameRegistry.registerBlock(self, "ZombieBlock");
-    	
-    	System.out.println("ID: " + Block.getIdFromBlock(self));
+    	GameRegistry.registerBlock(self, self.getUnlocalizedName().substring(5));
 	}
 	
 	protected ZombieBlock(Material mat) {
@@ -61,5 +63,4 @@ public class ZombieBlock extends Block {
 		this.setTickRandomly(true);
 		// TODO Auto-generated constructor stub
 	}
-
 }
